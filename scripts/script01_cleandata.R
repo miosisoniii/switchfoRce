@@ -11,6 +11,8 @@
 rm(list = ls())
 library(dplyr)
 library(ggplot2)
+library(stringr)
+library(tidyr)
 
 #-------------------------------------------------------------------------------------#
 # Read data
@@ -22,13 +24,21 @@ brown_raw <- read.csv("../data/cherry_brown.csv")
 #-------------------------------------------------------------------------------------#
 # Calculate mean force for Push/Release
 #-------------------------------------------------------------------------------------#
-red_raw
+
+# create column for time? X = distance traveled in mm
+# red_raw %>% mutate(time = 1:nrow(red_raw)) -> redclean
 
 
-#-------------------------------------------------------------------------------------#
-# Create time column
-#-------------------------------------------------------------------------------------#
+redclean %>% 
+  mutate(ave_press_force = mean(c(press1.x, press2.x, press3.x, press4.x)),
+         average_release_force = mean(c(release1.x, release2.x, release3.x, release4.x))) -> redtest
+  
 
+
+red_raw %>% 
+  gather(press, distance, starts_with("press"), na.rm = TRUE) %>% 
+  select(press, distance) %>%
+  separate(press, c("press", "x"), ".")-> redtest
 
 
 #-------------------------------------------------------------------------------------#
